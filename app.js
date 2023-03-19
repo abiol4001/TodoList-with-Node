@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const _ = require('lodash')
 const date = require(__dirname + "/date.js");
 const { List, Item, listSchema } = require("./model/list");
 require("dotenv").config();
@@ -22,16 +23,16 @@ mongoose
 
 app.set("view engine", "ejs");
 
-let workItems = [];
+
 
 const item1 = new List({
-  name: "Get up to pray",
+  name: "Welcome to your todolist!",
 });
 const item2 = new List({
-  name: "Get some water to drink",
+  name: "Hit the + button to add a new item.",
 });
 const item3 = new List({
-  name: "Eat some food!",
+  name: "<-- Hit this to delete an item.",
 });
 
 const itemSchema = {
@@ -40,9 +41,6 @@ const itemSchema = {
 };
 
 const defaultItems = [item1, item2, item3];
-// List.insertMany([item1, item2, item3])
-//   .then((result) => console.log(result))
-//   .catch((err) => console.log(err));
 
 app.get("/", (req, res) => {
   let day = date();
@@ -83,11 +81,21 @@ app.post("/", function (req, res) {
 });
 
 app.post("/delete", (req, res) => {
-  List.findByIdAndDelete(req.body.checkbox).then((result) => res.redirect("/"));
+    const checkedItemId = req.body.checkbox;
+    const listName = req.body.listName;
+   
+    let day = date()
+
+    if(day.includes(listName)) {
+        List.findByIdAndDelete(checkedItemId).then((result) => res.redirect("/"));
+    } else if (listName !== day) {
+        Item.findOneAndUpdate({name: listName}, {$pull: {items: {_id: checkedItemId}}})
+            .then(result => res.redirect('/' + listName))
+    }
 });
 
 app.get("/:customListName", function (req, res) {
-  const customListName = req.params.customListName;
+  const customListName = _.capitalize(req.params.customListName);
 
   Item.findOne({ name: customListName }).then((foundList) => {
     if (!foundList) {
@@ -106,6 +114,4 @@ app.get("/:customListName", function (req, res) {
   });
 });
 
-// app.post('/work', function(req, res) {
 
-// })

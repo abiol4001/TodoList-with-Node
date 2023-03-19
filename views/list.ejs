@@ -21,6 +21,7 @@
                     <input type="checkbox" name="checkbox" onchange="this.form.submit()" value="<%= newListItems[i]._id %>">
                     <p><%=newListItems[i].name%></p>
                 </div>
+                <input type="hidden" name="listName" value=<%= listTitle %>>
             </form>
            <% } %>
            <form class="item" action="/" method="post">
