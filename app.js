@@ -10,7 +10,7 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-const dbURL = `mongodb+srv://${process.env.USERNAME}:${process.env.PASSWORD}@nodetuts.zrzd40b.mongodb.net/todoList?retryWrites=true&w=majority`;
+const dbURL = process.env.MONGO_URI
 
 mongoose
   .connect(dbURL)
@@ -113,5 +113,3 @@ app.get("/:customListName", function (req, res) {
     }
   });
 });
-
-
