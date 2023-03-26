@@ -63,7 +63,7 @@ app.post("/", function (req, res) {
   }
   let day = date();
 
-  console.log(day.includes(listName));
+//   console.log(day.includes(listName));
   console.log(listName !== day);
    if(day.includes(listName)) {
     list
